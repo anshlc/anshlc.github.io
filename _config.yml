@@ -1,7 +1,6 @@
 # Site settings
 title:          Anshul's Blog
 description:    "Stories of me trying out new stuff"
-baseurl:        ""
 url:            "https://anshlc.github.io"
 
 # Google Analytics
@@ -15,8 +14,6 @@ author:
 
 # Build settings
 markdown:       kramdown
-include:
-  - _pages
 
 # Assets
 sass:
@@ -31,7 +28,7 @@ plugins:
   # - jemoji #Uncomment this to allow emoji in your post
 
 # Permalinks
-permalink:      /:year-:month-:day/:title
+permalink:      pretty
 paginate:       5
 
 # Excludes
