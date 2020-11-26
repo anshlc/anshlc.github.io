@@ -16,7 +16,8 @@ We'll be learning following fundamental concepts of AI with fastText:
 
 
 ## What is fastText
-[fastText](https://fasttext.cc) is a library for efficient learning of word representations and sentence classification.
+[fastText](https://fasttext.cc) is a free, open-source, lightweight library for efficient learning of word 
+representations and sentence classification.
 
 ### Text Classification
 Text classification is as fundamental as it is self-explanatory. It is essentially supervised learning. Applications 
@@ -86,6 +87,8 @@ Learning rate of an algorithm indicates how much the model changes after each ex
 We can both increase and decrease the learning rate of an algorithm. A learning rate of 0 means that there is no 
 change in learning, or the rate of change is just 0, so the model doesn’t change at all. 
 A usual learning rate is 0.1 to 1.
+<img src="/assets/lr.png" alt="Architecture">
+
 #### epochs
 Epoch is the number of times a model sees a phrase or an example input. By default, fasttext has epoch set to 5 i.e the 
 model sees an example five times, increasing the epoch can help the model in learning better. But it can have reverse 
@@ -142,7 +145,7 @@ to increase stop training).
 
 <img src="/assets/underfitting-overfitting.png" alt="Architecture">
 
-### How does it work? Model training
+## How does it work? Model training
 Consider a dataset with following texts and labels
 {% highlight js %}
 __label__sports : India defeats Pakistan again!
