@@ -203,7 +203,7 @@ loss_sports = 0.02227639471
 loss_travel = 1.39794000867
 {% endhighlight %}
 Now if the model predicts __`label__sports` for text_1, the loss is low (0.02227639471). This is expected as the model 
-has predicted the right label. On the other side, if the model would have predicted `__loss_travel`, there is something 
+has predicted the right label. On the other side, if the model would have predicted `__label_travel`, there is something 
 wrong with our model, and high loss value confirms the same. 
 
 
