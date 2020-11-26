@@ -35,7 +35,25 @@ fasText expects each line of the text file contains a list of labels, followed b
 labels should start by the `__label__` prefix, to distinguish between a label and a word.
 For our dataset, all the reviews are divided into two classes, the classes are `__label__1` which means negative review
 and `__label__2` meaning positive review. We have divided our dataset into two parts, for training and testing respectively.
-
+Here is what the text file looks after pre-processing
+{% highlight txt %}
+$ head -n 3 train.txt
+__label__2 Stuning even for the non-gamer: This sound track was beautiful! It paints the senery in your mind so well 
+I would recomend it even to people who hate vid. game music! I have played the game Chrono Cross but out of all of the 
+games I have ever played it has the best music! It backs away from crude keyboarding and takes a fresher step with grate
+guitars and soulful orchestras. It would impress anyone who cares to listen! ^_^
+__label__2 Whispers of the Wicked Saints: This was a easy to read book that made me want to keep reading on and on, not 
+easy to put down.It left me wanting to read the follow on, which I hope is coming soon. I used to read a lot but have 
+gotten away from it. This book made me want to read again. Very enjoyable.
+__label__1 Buyer beware: This is a self-published book, and if you want to know why--read a few paragraphs! Those 5 star
+reviews must have been written by Ms. Haddon's family and friends--or perhaps, by herself! I can't imagine anyone 
+reading the whole thing--I spent an evening with the book and a friend and we were in hysterics reading bits and pieces
+of it to one another. It is most definitely bad enough to be entered into some kind of a "worst book" contest. I can't
+believe Amazon even sells this kind of thing. Maybe I can offer them my 8th grade term paper on "To Kill a 
+Mockingbird"--a book I am quite sure Ms. Haddon never heard of. Anyway, unless you are in a mood to send a book to 
+someone as a joke---stay far, far away from this one!
+{% endhighlight %}
+Now lets train our model on the dataset
 {% highlight bash %}
 $ ./fasttext supervised -input train.txt -output model_amzn
 Read 289M words
@@ -93,9 +111,8 @@ A usual learning rate is 0.1 to 1.
 Epoch is the number of times a model sees a phrase or an example input. By default, fasttext has epoch set to 5 i.e the 
 model sees an example five times, increasing the epoch can help the model in learning better. But it can have reverse 
 effect on the learning if this number is increased after a certain limit. This behaviour is called over-fitting which 
-we will discuss later
-
-Here is a graph of precision vs epoch for our dataset
+we will discuss later.<br>
+Testing our newly trained model on validation dateset with varying epoch confirms this behaviour.
 <img src="/assets/pre_vs_epoch.png" alt="Architecture">
 
 As you can see, after epoch=10, the model performance starts deteriorating. Model starts over-fitting the training data,
@@ -108,17 +125,15 @@ model. In fastText, we work at the word level and thus unigrams are words. Simil
 of 2 consecutive tokens or words.
 Training models with higher n-grams is usefull for classification problems where word order is important, such as 
 sentiment analysis, which we are doing. Taking into account n words at a time allows model to store more context with a 
-well-understood space–time tradeoff, which increases scalablity too.
-
+well-understood space–time tradeoff, which increases scalablity too.<br>
+Lets see how precision changes when our model is tested with validation dateset with varying word n-grams value.
 <img src="/assets/pr_vs_wordngrams.png" alt="Architecture">
 
 
 ### Underfitting
 A statistical model or a machine learning algorithm is said to have underfitting when it cannot capture the underlying 
 trend of the data. (It’s just like trying to fit undersized pants!) Underfitting destroys the accuracy of our machine 
-learning model. Its occurrence simply means that our model or the algorithm does not fit the data well enough. It usually
- happens when we have less data to build an accurate model and also when we try to build a linear model with a 
- non-linear data. 
+learning model. Its occurrence simply means that our model or the algorithm does not fit the data well enough.
 
 Techniques to reduce underfitting :
 1. Increase model complexity
@@ -127,9 +142,11 @@ Techniques to reduce underfitting :
 4. Increase the number of epochs or increase the duration of training to get better results.
 
 ### Overfitting
-A statistical model is said to be overfitted, when we train it with a lot of data (just like fitting ourselves in 
-oversized pants!). When a model gets trained with so much of data, it starts learning from the noise and inaccurate 
-data entries in our data set. Then the model does not categorize the data correctly, because of too many details and 
+Overfitting happens when a model starts to learn the details and noise in the training data to the extent that it 
+negatively impacts the performance of the model on new data.
+This means that the noise or random fluctuations in the training data is picked up and learned as concepts by the model.
+The problem is that these concepts do not apply to new data and negatively impact the models ability to generalize. 
+Then the model does not categorize the data correctly, because of too many details and 
 noise. The causes of overfitting are the non-parametric and non-linear methods because these types of machine learning 
 algorithms have more freedom in building the model based on the dataset and therefore they can really build unrealistic 
 models. A solution to avoid overfitting is using a linear algorithm if we have linear data or using the parameters like 
@@ -140,8 +157,7 @@ Techniques to reduce overfitting :
 2. Reduce model complexity.
 3. Early stopping during the training phase (have an eye over the loss over the training period as soon as loss begins 
 to increase stop training).
-4. Ridge Regularization and Lasso Regularization
-5. Use dropout for neural networks to tackle overfitting.
+4. Use dropout for neural networks to tackle overfitting.
 
 <img src="/assets/underfitting-overfitting.png" alt="Architecture">
 
@@ -164,6 +180,32 @@ Now how to tweak the vectors
 <img src="/assets/softmax.png" alt="Architecture">
 3. Probabilities for all the labels need to be calculated
 4. Calculate negative log likelihood and propogate the error.
+
+Lets do the maths for our example dataset. Assume for the first text `India defeats Pakistan again!`, (text_1), the 
+scoring functions returns following values <br>
+{% highlight js %}
+__label__sports : -2
+__label__travel : -5
+{% endhighlight %}
+The scoring function can be as simple as `s = - distance(label, text)`
+
+Now lets put these scores in the softmax function
+{% highlight js %}
+__label__sports : 0.95
+__label__travel : 0.04
+{% endhighlight %}
+
+Propogating the loss :  given the probabilities of both the labels, we can calculate negative log likelihood scores 
+{% highlight js %}
+loss =  -log(p(correct label)) 
+
+loss_sports = 0.02227639471
+loss_travel = 1.39794000867
+{% endhighlight %}
+Now if the model predicts __`label__sports` for text_1, the loss is low (0.02227639471). This is expected as the model 
+has predicted the right label. On the other side, if the model would have predicted `__loss_travel`, there is something 
+wrong with our model, and high loss value confirms the same. 
+
 
 Now this method is very computationaly expensive, we need to calculate probabiltities for each text with each label.
 fastText uses a different method called *Hierarchical softmax*
