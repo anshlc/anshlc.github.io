@@ -27,9 +27,9 @@ of text classification range from spam filtering, sentiment analysis, content ta
   allows you to locate your subject of interest, follow the echo chamber in which you’d like to occupy, etc.
 
 ### Training
-We'll be doing **Sentiment analysis** today, which is basically the process of understanding if a given text is talking 
-positively or negatively about a given subject. The dataset we are using is a set of millions of Amazon reviews posted 
-by users.
+**Sentiment analysis** is one popular text classification problem, which is basically the process of understanding if a 
+given text is talking positively or negatively about a given subject. The dataset we are using is a set of millions of 
+Amazon reviews posted by users.<br>
 We need labeled data to train our supervised classifier. Hence some pre-processing is needed before training the model.
 fasText expects each line of the text file contains a list of labels, followed by the corresponding document. All the 
 labels should start by the `__label__` prefix, to distinguish between a label and a word.
